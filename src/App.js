@@ -40,7 +40,7 @@ class App extends Component {
     } else if(prevState.geofencing) {
       drawingManager.setMap(null);
       //sub_area.setMap(null)
-      mapPolygon.setMap(null);
+      if(mapPolygon) mapPolygon.setMap(null);
       //map.fitBounds(new window.google.maps.LatLngBounds())
       //bounds.setMap(null);
     }
