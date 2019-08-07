@@ -9,6 +9,7 @@ let sub_area;
 let coordinates=[];
 let color = ['#FF0000', '#4286f4','#ffff00','#ff00b2','#bb00ff','#00ffff','#26ff00','#00ff87'];
 let polygonArray = [];
+let drawingManager;
 
 class App extends Component {
   
@@ -36,7 +37,7 @@ class App extends Component {
     if(!prevState.geofencing) {
       this._initGeofencing();
     } else if(prevState.geofencing) {
-      this._initMap();
+      drawingManager.setMap(null);
     }
   }
 
@@ -64,7 +65,7 @@ class App extends Component {
       this.addCoordinate(lat, lng);
     });
 
-    var drawingManager = new window.google.maps.drawing.DrawingManager({
+    drawingManager = new window.google.maps.drawing.DrawingManager({
       drawingMode: window.google.maps.drawing.OverlayType.POLYGON,
       drawingControl: true,
       drawingControlOptions: {
