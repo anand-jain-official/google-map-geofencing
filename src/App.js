@@ -4,10 +4,11 @@ import {AsyncTypeahead} from 'react-bootstrap-typeahead';
 import _ from 'lodash';
 
 let map;
-let bounds = new window.google.maps.LatLngBounds();
+let bounds = new window.window.google.maps.LatLngBounds();
 let sub_area;
 let coordinates=[];
 let color = ['#FF0000', '#4286f4','#ffff00','#ff00b2','#bb00ff','#00ffff','#26ff00','#00ff87'];
+let polygonArray;
 
 class App extends Component {
   
@@ -36,24 +37,73 @@ class App extends Component {
   }
 
   _initMap () {
-    map = new window.google.maps.Map(document.getElementById('map'),{
+    map = new window.window.google.maps.Map(document.getElementById('map'),{
       center: {lat: -6.226996, lng: 106.819894},
       zoom: 10,
       zoomControl: true,
       zoomControlOptions: {
-        position: window.google.maps.ControlPosition.RIGHT_CENTER
+        position: window.window.google.maps.ControlPosition.RIGHT_CENTER
       },
       scrollwheel: false,
       streetViewControl: false,
       mapTypeControl: false,
       mapTypeId: 'roadmap',
     });
-    window.google.maps.event.addListener(map, "click", (event) => {
+    window.window.google.maps.event.addListener(map, "click", (event) => {
       let lat = event.latLng.lat();
       let lng = event.latLng.lng();
       // populate yor box/field with lat, lng
       // alert("Lat=" + lat + "; Lng=" + lng);
       this.addCoordinate(lat, lng);
+    });
+
+    var drawingManager = new window.google.maps.drawing.DrawingManager({
+      drawingMode: window.google.maps.drawing.OverlayType.POLYGON,
+      drawingControl: true,
+      drawingControlOptions: {
+        position: window.google.maps.ControlPosition.TOP_CENTER,
+        drawingModes: [
+          window.google.maps.drawing.OverlayType.MARKER,
+          window.google.maps.drawing.OverlayType.CIRCLE,
+          window.google.maps.drawing.OverlayType.POLYGON,
+          window.google.maps.drawing.OverlayType.POLYLINE,
+          window.google.maps.drawing.OverlayType.RECTANGLE
+        ]
+      },
+      /* not useful on jsfiddle
+      markerOptions: {
+        icon: 'images/car-icon.png'
+      }, */
+      circleOptions: {
+        fillColor: '#ffff00',
+        fillOpacity: 1,
+        strokeWeight: 5,
+        clickable: false,
+        editable: true,
+        zIndex: 1
+      },
+      polygonOptions: {
+        fillColor: '#BCDCF9',
+        fillOpacity: 0.5,
+        strokeWeight: 2,
+        strokeColor: '#57ACF9',
+        clickable: false,
+        editable: false,
+        zIndex: 1
+      }
+    });
+    console.log(drawingManager)
+    drawingManager.setMap(map)
+
+
+
+    window.google.maps.event.addListener(drawingManager, 'polygoncomplete', function(polygon) {
+      let coords;
+      for (var i = 0; i < polygon.getPath().getLength(); i++) {
+        coords += polygon.getPath().getAt(i).toUrlValue(6);
+      }
+      console.log(coords);
+      polygonArray.push(polygon);
     });
   }
 
@@ -150,7 +200,7 @@ class App extends Component {
       this.renderCoordinate(option.geojson.coordinates[0]);
       
       if(coordinates.length > 1){
-        sub_area = new window.google.maps.Polygon({
+        sub_area = new window.window.google.maps.Polygon({
           paths: coordinates,
           strokeColor: color[1],
           strokeOpacity: 0.8,
@@ -178,13 +228,14 @@ class App extends Component {
   render() {
     return (
       <div className="container" style={{height: `100%`}}>
+        <div className="info"></div>
         <div className="page-header">
-            <h1>Area Geofencing on a Google Maps - React JS Example Projects</h1>
+            <h1>Area Geofencing on a window.google Maps - React JS Example Projects</h1>
           </div>
           <p className="lead">
-            Welcome to the first series React JS Example Projects. This series explain how to create Area Geofencing on a Google Maps with React JS, hopefully we can learn together.
+            Welcome to the first series React JS Example Projects. This series explain how to create Area Geofencing on a window.google Maps with React JS, hopefully we can learn together.
             <br></br>
-            To create area geofencing we must find area boundaries and draw on google maps as polygon. During the writing of this series, area boundaries feature not available in the Google Maps API. 
+            To create area geofencing we must find area boundaries and draw on window.google maps as polygon. During the writing of this series, area boundaries feature not available in the window.google Maps API. 
             The solution is using OpenStreetMap API for getting area boundaries <a href="#">more...</a>
           </p>
           <a href="https://www.youtube.com/watch?v=hLaRG0uZPWc" className="btn btn-primary">DEMO</a> &nbsp;
