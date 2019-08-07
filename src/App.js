@@ -4,7 +4,8 @@ import {AsyncTypeahead} from 'react-bootstrap-typeahead';
 import _ from 'lodash';
 
 let map;
-let bounds = new window.window.google.maps.LatLngBounds();
+let mapPolygon;
+let bounds = new window.google.maps.LatLngBounds();
 let sub_area;
 let coordinates=[];
 let color = ['#FF0000', '#4286f4','#ffff00','#ff00b2','#bb00ff','#00ffff','#26ff00','#00ff87'];
@@ -38,6 +39,10 @@ class App extends Component {
       this._initGeofencing();
     } else if(prevState.geofencing) {
       drawingManager.setMap(null);
+      //sub_area.setMap(null)
+      mapPolygon.setMap(null);
+      //map.fitBounds(new window.google.maps.LatLngBounds())
+      //bounds.setMap(null);
     }
   }
 
@@ -105,6 +110,8 @@ class App extends Component {
 
     window.google.maps.event.addListener(drawingManager, 'polygoncomplete', function(polygon) {
       var path = polygon.getPath()
+      mapPolygon = polygon;
+      
       var coordinates = [];
   
   for (var i = 0 ; i < path.length ; i++) {
@@ -141,6 +148,9 @@ class App extends Component {
       this.renderCoordinate(option.geojson.coordinates[0]);
       
       if(coordinates.length > 1){
+
+        console.log("coordinates")
+
         sub_area = new window.window.google.maps.Polygon({
           paths: coordinates,
           strokeColor: color[1],
@@ -152,6 +162,7 @@ class App extends Component {
         });
         
         sub_area.setMap(map);
+        console.log("sub_area:",)
         map.setOptions({ maxZoom: 15 });
         map.fitBounds(bounds);
   
